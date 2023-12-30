@@ -1,0 +1,109 @@
+class Passenger {
+    private String name;
+    private String contactNumber;
+
+    public Passenger(String name, String contactNumber) {
+        this.name = name;
+        this.contactNumber = contactNumber;
+    }
+}
+
+class Bus {
+    private String busNumber;
+    private int totalSeats;
+    private List<Seat> availableSeats;
+
+    public Bus(String busNumber, int totalSeats) {
+        this.busNumber = busNumber;
+        this.totalSeats = totalSeats;
+        this.availableSeats = new ArrayList<>();
+        initializeSeats();
+    }
+
+    private void initializeSeats() {
+        for (int i = 1; i <= totalSeats; i++) {
+            availableSeats.add(new Seat(i));
+        }
+    }
+
+    public List<Seat> getAvailableSeats() {
+        return availableSeats;
+    }
+}
+
+class Seat {
+    private int seatNumber;
+    private boolean isReserved;
+
+    public Seat(int seatNumber) {
+        this.seatNumber = seatNumber;
+        this.isReserved = false;
+    }
+
+    public boolean reserve() {
+        if (!isReserved) {
+            isReserved = true;
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+class Reservation {
+    private Passenger passenger;
+    private Bus bus;
+    private Seat seat;
+
+    public Reservation(Passenger passenger, Bus bus, Seat seat) {
+        this.passenger = passenger;
+        this.bus = bus;
+        this.seat = seat;
+        seat.reserve();
+    }
+}
+
+class TicketReservationSystem {
+    private List<Bus> buses;
+    private List<Reservation> reservations;
+
+    public TicketReservationSystem() {
+        this.buses = new ArrayList<>();
+        this.reservations = new ArrayList<>();
+    }
+
+    public void addBus(Bus bus) {
+        buses.add(bus);
+    }
+
+    public List<Bus> getAllBuses() {
+        return buses;
+    }
+
+    public Reservation makeReservation(Passenger passenger, Bus bus, Seat seat) {
+        Reservation reservation = new Reservation(passenger, bus, seat);
+        reservations.add(reservation);
+        return reservation;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Bus bus = new Bus("BUS123", 20);
+        Passenger passenger = new Passenger("John Doe", "1234567890");
+
+        TicketReservationSystem reservationSystem = new TicketReservationSystem();
+        reservationSystem.addBus(bus);
+
+        List<Bus> availableBuses = reservationSystem.getAllBuses();
+        System.out.println("Available Buses: " + availableBuses);
+
+        List<Seat> availableSeats = bus.getAvailableSeats();
+        System.out.println("Available Seats: " + availableSeats);
+
+        Seat selectedSeat = availableSeats.get(0);
+        Reservation reservation = reservationSystem.makeReservation(passenger, bus, selectedSeat);
+
+        System.out.println("Reservation Details: " + reservation);
+    }
+}
